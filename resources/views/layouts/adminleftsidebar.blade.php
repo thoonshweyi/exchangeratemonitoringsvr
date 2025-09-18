@@ -14,12 +14,17 @@
                     <a href="#" class="navbar-brand d-block text-white text-center py-3 mx-auto mb-4 borderbottoms">Exchange Rate Monitoring</a>
 
                     <div class="pb-3 borderbottoms">
-                        <img src="./assets/img/users/user1.jpg" class="rounded-circle me-3" width="50px" alt="user1"/>
-                        <a href="#" class="text-white">Ms.July</a>
+                        <img src="{{ asset("/assets/img/users/user1.jpg")}}" class="rounded-circle me-3" width="50px" alt="{{ $userdata->name }}"/>
+                        <a href="#" class="text-white">{{ $userdata->name }}</a>
                     </div>
                     <!--'flex-column' change flex to original column -->
                     <ul class="navbar-nav flex-column mt-4">
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 currents"><i class="fas fa-home fa-lg me-3"></i>Dashboard</a></li>
+                        <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#pagelayout"><i class="fas fa-user-cog"></i> Analytics<i class="fas fa-angle-right mores"></i></a>
+                            <ul id="pagelayout" class="collapse ps-4">
+                                <li><a href="{{ route("currencies.index") }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>  Currencies</a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-user fa-lg me-3"></i>Profile</a></li>
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-envelope fa-lg me-3"></i>Inbox</a></li>
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-shopping-cart fa-lg me-3"></i>Sales</a></li>
@@ -40,6 +45,8 @@
                             </ul>
                         </li>
                         @endcan --}}
+
+
 
                     </ul>
 

@@ -21,9 +21,14 @@
         {{-- <link href="{{ asset('./assets/libs/fontawesome/all.min.css') }}" rel="stylesheet" type="text/css"/> --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+        {{-- sweetalert2 css1 js1 --}}
+        <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" />
 
-        <!-- custome css -->
+        <!-- custome css css1-->
         <link href="{{ asset('assets/dist/css/style.css') }}" rel="stylesheet" type="text/css"/>
+
+        <!-- Extra CSS -->
+        @yield('css')
 
     </head>
     <body>

@@ -65,7 +65,14 @@
         <!-- jquery js1 -->
         <script src="{{asset('./assets/libs/jquery-3.6.0/jquery-3.6.0.min.js')}}" type="text/javascript"></script>
 
+        {{-- sweetalert2 css1 js1 --}}
+        <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}" type="text/javascript"></script>
+
+
         <!-- custome js -->
         <script src="{{ asset('./assets/dist/js/app.js') }}" type="text/javascript"></script>
+
+        <!-- Extra js -->
+        @yield('scripts')
     </body>
 </html>

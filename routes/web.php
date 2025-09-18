@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\DashboardsController;
 
 /*
@@ -29,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get("/dashboards",[DashboardsController::class,'index'])->name("dashboards.index");
+
+    Route::resource("currencies",CurrenciesController::class);
+    Route::delete("/currenciesbulkdeletes",[CurrenciesController::class,"bulkdeletes"])->name("currencies.bulkdeletes");
 
 });
 
