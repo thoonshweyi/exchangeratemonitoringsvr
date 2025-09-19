@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('phone_no')->nullable();
             $table->string('employee_id',12)->nullable();
             $table->bigInteger('branch_id')->nullable();
-            $table->integer('status')->nullable()->default(1);
+            $table->integer('status_id')->nullable()->default(1);
         });
     }
 
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->dropColumn("phone_no");
             $table->dropColumn("employee_id");
             $table->dropColumn("branch_id");
-            $table->dropColumn("status");
+            $table->dropColumn("status_id");
         });
     }
 };

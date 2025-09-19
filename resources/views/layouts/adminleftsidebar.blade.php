@@ -20,15 +20,19 @@
                     <!--'flex-column' change flex to original column -->
                     <ul class="navbar-nav flex-column mt-4">
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 currents"><i class="fas fa-home fa-lg me-3"></i>Dashboard</a></li>
-                        <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#pagelayout"><i class="fas fa-user-cog"></i> Analytics<i class="fas fa-angle-right mores"></i></a>
+                        <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#pagelayout"><i class="fas fa-chart-line fa-lg me-3"></i> Analytics<i class="fas fa-angle-right mores"></i></a>
                             <ul id="pagelayout" class="collapse ps-4">
                                 <li><a href="{{ route("currencies.index") }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>  Currencies</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-user fa-lg me-3"></i>Profile</a></li>
+                        <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#admin"><i class="fas fa-user-cog fa-lg me-3"></i> System Manager<i class="fas fa-angle-right mores"></i></a>
+                            <ul id="admin" class="collapse ps-4">
+                                <li><a href="{{ route('users.index') }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>  Users</a></li>
+                            </ul>
+                        </li>
+                        {{-- <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-user fa-lg me-3"></i>Profile</a></li> --}}
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-envelope fa-lg me-3"></i>Inbox</a></li>
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-shopping-cart fa-lg me-3"></i>Sales</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-chart-line fa-lg me-3"></i>Analytics</a></li>
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-chart-bar fa-lg me-3"></i>Charts</a></li>
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-table fa-lg me-3"></i>Return</a></li>
                         <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-truck fa-lg me-3"></i>Delivery</a></li>

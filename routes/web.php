@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\DashboardsController;
@@ -16,9 +17,14 @@ use App\Http\Controllers\DashboardsController;
 |
 */
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -30,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get("/dashboards",[DashboardsController::class,'index'])->name("dashboards.index");
+
+    Route::resource('users', UsersController::class);
 
     Route::resource("currencies",CurrenciesController::class);
     Route::delete("/currenciesbulkdeletes",[CurrenciesController::class,"bulkdeletes"])->name("currencies.bulkdeletes");

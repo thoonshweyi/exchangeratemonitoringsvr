@@ -1,5 +1,5 @@
         <!-- START FOOTER SECTION -->
-        <section>
+        <section class="footers">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-10 col-lg-9 col-md-8 ms-auto">
@@ -48,7 +48,11 @@
 
                     <div class="modal-footer">
                         <button type="butto" class="btn btn-success" data-bs-dismiss="modal">Stay Here</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Logout</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">Logout</button>
+
+                        {{-- <a href="javascript:void(0);" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logoutform').submit();"><i class="fas fa-sign-out fa-sm text-muted me-2"></i>Logout</a> --}}
+                        <form id="logoutform" action="{{ route('logout') }}" method="POST" >@csrf</form>
+
                     </div>
                 </div>
             </div>

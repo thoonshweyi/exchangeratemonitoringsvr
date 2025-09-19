@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone_no',
+        'employee_id',
+        'branch_id',
+        'status_id'
     ];
 
     /**
@@ -41,4 +45,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+     public function status(){
+        return $this->belongsTo(Status::class); // send all column
+    }
+
 }

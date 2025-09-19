@@ -135,3 +135,13 @@ a{
     border-left: 3px solid tomato;
 }
 /* END PROGRESS & TASK SECTION */
+
+/* Start Footer */
+.footers{
+    width:100%;
+
+    position:fixed;
+    right:0;
+    bottom:0;
+}
+/* End  Footer */
