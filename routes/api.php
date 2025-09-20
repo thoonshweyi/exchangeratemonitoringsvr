@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CurrenciesControler;
+use App\Http\Controllers\Api\ExchangeDocusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource("currencies",CurrenciesControler::class,["as"=>"api"]);
 Route::put("/currenciesstatus",[CurrenciesControler::class,"typestatus"]);
+
+Route::apiResource("exchangedocus",ExchangeDocusController::class,["as"=>"api"]);

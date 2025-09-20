@@ -15,7 +15,7 @@ class CurrenciesControler extends Controller
      */
     public function index()
     {
-        $statuses = Currency::all();
+        $statuses = Currency::where("status_id",3)->get();
         return  CurrenciesResource::collection($statuses);
     }
     /**
