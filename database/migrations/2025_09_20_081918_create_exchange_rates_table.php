@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamp("record_at");
             $table->text("description")->nullable();
             $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("exchange_docu_id");
             $table->timestamps();
         });
     }

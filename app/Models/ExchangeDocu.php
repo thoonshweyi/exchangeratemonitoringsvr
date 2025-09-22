@@ -15,4 +15,12 @@ class ExchangeDocu extends Model
         'remark',
         'user_id'
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function exchangerates(){
+        return $this->hasMany(ExchangeRate::class);
+    }
 }

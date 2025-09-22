@@ -20,6 +20,12 @@ class ExchangeRate extends Model
         'earn_sell',
         'record_at',
         'description',
-        'user_id'
+        'user_id',
+        'exchange_docu_id'
     ];
+
+    public function currency(){
+        return $this->belongsTo(Currency::class);
+    }
+
 }

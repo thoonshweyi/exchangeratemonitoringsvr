@@ -20,7 +20,7 @@ class ExchangeDocusController extends Controller
      */
     public function index()
     {
-        $exchangedocus = ExchangeDocu::paginate(10);
+        $exchangedocus = ExchangeDocu::orderBy('id','desc')->paginate(10);
 
 
         return $this->sendRespond(ExchangeDocusResource::collection($exchangedocus),"Exchange Docus retrived successfully");
@@ -74,11 +74,12 @@ class ExchangeDocusController extends Controller
                     'earn_sell' => $currencyObj["earn"]["sell"],
                     'record_at' => Carbon::now(),
                     'description' => '',
-                    'user_id' => 1
+                    'user_id' => 1,
+                    'exchange_docu_id' => $exchangedocu->id
                 ]);
             }
             DB::commit();
-            return $this->sendRespond(NULL,"Exchange saved successfully");
+            return $this->sendRespond($exchangedocu,"Exchange saved successfully");
 
         }catch (Exception $e) {
             DB::rollBack();
@@ -107,15 +108,11 @@ class ExchangeDocusController extends Controller
 
         $exchangeObj = [
             'id' => $exchangedocu->id,
-            'date' =>  $exchangedocu->date,
+            'date' =>  Carbon::parse($exchangedocu->date)->format("Y-m-d"),
             'remark' => $exchangedocu->remark,
             'user_id' => $exchangedocu->user_id,
 
-            // 'exchangerates' => $exchangedocu->exchangerates()->orderBy("id",'asc')->get()->map(function ($question) {
-
-            // })
-
-            'exchangerates' => ExchangeRate::all()
+            'exchangerates' => $exchangedocu->exchangerates()->with('currency')->get()
         ];
 
         return response()->json($exchangeObj);
@@ -126,7 +123,50 @@ class ExchangeDocusController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+
+        DB::beginTransaction();
+        try{
+
+
+            $exchangedocu = ExchangeDocu::findOrFail($id);
+
+            $date = $request->date;
+            $exchangedocu->update([
+                'date' => $date,
+                'remark' => '',
+                'user_id' => 1
+            ]);
+
+            $exchangerateDatas = $request->exchangerates;
+            foreach($exchangerateDatas as $exchangerateData){
+                Log::info($exchangerateData);
+                $exchangerate = ExchangeRate::findOrFail($exchangerateData['id']);
+                $exchangerate->update([
+                    'currency_id' => $exchangerateData['currency_id'],
+                    'tt_buy' => $exchangerateData['tt_buy'],
+                    'tt_sell' => $exchangerateData['tt_sell'],
+                    'cash_buy' => $exchangerateData['cash_buy'],
+                    'cash_sell' => $exchangerateData['cash_sell'],
+                    'earn_buy' => $exchangerateData['earn_buy'],
+                    'earn_sell' => $exchangerateData['earn_sell'],
+                    // 'record_at' => Carbon::now(),
+                    'description' => '',
+                    'user_id' => 1
+                ]);
+            }
+
+            DB::commit();
+            return $this->sendRespond($exchangedocu,"Exchange updated successfully");
+
+
+         }catch (Exception $e) {
+            DB::rollBack();
+            Log::debug($e->getMessage());
+
+            return response()->json(["error"=>$e->getMessage()]);
+        }
+
     }
 
     /**
@@ -135,5 +175,25 @@ class ExchangeDocusController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    public function todayDashboard(){
+        $exchangedocu = ExchangeDocu::orderBy('id', 'desc')->first();
+        $currencies = Currency::where("status_id",3)->get();
+
+        $exchangeObj = [
+            'id' => $exchangedocu->id,
+            'date' => Carbon::parse($exchangedocu->date)->format('D, M d, Y'),
+            'remark' => $exchangedocu->remark,
+            'user_id' => $exchangedocu->user_id,
+            'created_at' => $exchangedocu->created_at->format('d-m-Y h:i:s A'),
+            'updated_at' => $exchangedocu->updated_at->format('d-m-Y h:i:s A'),
+
+
+            'exchangerates' => $exchangedocu->exchangerates()->with('currency')->get()
+        ];
+
+        return response()->json($exchangeObj);
     }
 }

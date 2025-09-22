@@ -24,3 +24,4 @@ Route::apiResource("currencies",CurrenciesControler::class,["as"=>"api"]);
 Route::put("/currenciesstatus",[CurrenciesControler::class,"typestatus"]);
 
 Route::apiResource("exchangedocus",ExchangeDocusController::class,["as"=>"api"]);
+Route::get("/exchangedocustodaydashboard",[ExchangeDocusController::class,"todayDashboard"]);
