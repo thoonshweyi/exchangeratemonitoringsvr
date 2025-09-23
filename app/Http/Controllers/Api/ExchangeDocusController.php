@@ -182,6 +182,17 @@ class ExchangeDocusController extends Controller
         $exchangedocu = ExchangeDocu::orderBy('id', 'desc')->first();
         $currencies = Currency::where("status_id",3)->get();
 
+        $yesterdayDoc = ExchangeDocu::whereDate('date', Carbon::parse($exchangedocu->date)->subDay())
+                        ->orderBy('id', 'desc')
+                        ->first();
+        $yesterdayRates = [];
+        if ($yesterdayDoc) {
+            $yesterdayRates = $yesterdayDoc->exchangerates()
+                            ->with('currency')
+                            ->get()
+                            ->keyBy('currency_id'); // easy to find by currency_id
+        }
+
         $exchangeObj = [
             'id' => $exchangedocu->id,
             'date' => Carbon::parse($exchangedocu->date)->format('D, M d, Y'),
@@ -192,8 +203,23 @@ class ExchangeDocusController extends Controller
 
 
             'exchangerates' => $exchangedocu->exchangerates()->with('currency')->get()
+                                ->map(function ($exchangerate) use ($yesterdayRates) {
+                                    $yesterdayrate = $yesterdayRates[$exchangerate->currency_id] ?? null;
+                                    return [
+                                        ...$exchangerate->toArray(),
+
+                                        // diffs
+                                        'diff_tt_buy'  => $yesterdayrate ? $exchangerate->tt_buy - $yesterdayrate->tt_buy : null,
+                                        'diff_tt_sell' => $yesterdayrate ? $exchangerate->tt_sell - $yesterdayrate->tt_sell : null,
+                                        // 'diff_cash_buy'  => $yesterdayrate ? $exchangerate->cash_buy - $yesterday->cash_buy : null,
+                                        // 'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterday->cash_sell : null,
+                                        // 'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterday->earn_buy : null,
+                                        // 'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterday->earn_sell : null,
+                                    ];
+                                })
         ];
 
         return response()->json($exchangeObj);
     }
+
 }

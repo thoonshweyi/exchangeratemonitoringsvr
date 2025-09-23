@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CurrenciesControler;
 use App\Http\Controllers\Api\ExchangeDocusController;
+use App\Http\Controllers\Api\ExchangeRatesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,6 @@ Route::put("/currenciesstatus",[CurrenciesControler::class,"typestatus"]);
 
 Route::apiResource("exchangedocus",ExchangeDocusController::class,["as"=>"api"]);
 Route::get("/exchangedocustodaydashboard",[ExchangeDocusController::class,"todayDashboard"]);
+
+Route::apiResource("exchangerates",ExchangeDocusController::class,["as"=>"api"]);
+Route::get("/exchangerates/{id}/detail",[ExchangeRatesController::class,"detail"]);
