@@ -97,6 +97,8 @@ class ExchangeRatesController extends Controller
                                             'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterdayrate->cash_sell : null,
                                             'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterdayrate->earn_buy : null,
                                             'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
+
+                                            'updated_time' => $exchangerate->updated_at->format('h:i A'),
                                         ];
                                     })
             ];

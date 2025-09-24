@@ -211,10 +211,10 @@ class ExchangeDocusController extends Controller
                                         // diffs
                                         'diff_tt_buy'  => $yesterdayrate ? $exchangerate->tt_buy - $yesterdayrate->tt_buy : null,
                                         'diff_tt_sell' => $yesterdayrate ? $exchangerate->tt_sell - $yesterdayrate->tt_sell : null,
-                                        // 'diff_cash_buy'  => $yesterdayrate ? $exchangerate->cash_buy - $yesterday->cash_buy : null,
-                                        // 'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterday->cash_sell : null,
-                                        // 'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterday->earn_buy : null,
-                                        // 'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterday->earn_sell : null,
+                                        'diff_cash_buy'  => $yesterdayrate ? $exchangerate->cash_buy - $yesterdayrate->cash_buy : null,
+                                        'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterdayrate->cash_sell : null,
+                                        'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterdayrate->earn_buy : null,
+                                        'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
                                     ];
                                 })
         ];
@@ -222,4 +222,57 @@ class ExchangeDocusController extends Controller
         return response()->json($exchangeObj);
     }
 
+
+    public function weeklyDashboard(){
+        $currencies = Currency::orderBy('id','asc')->pluck('code','id');
+        // dd($currencies);
+        $fields = ['tt','cash','earn'];
+
+        $exchangedocus = ExchangeDocu::orderBy('id','desc')
+        ->limit(7)->get();
+
+        $result = [];
+        foreach($currencies as $id=>$currency){
+            foreach($fields as $field){
+                $rows = [];
+                $rows[] = ["Date", $currency];
+                foreach($exchangedocus as $exchangedocu){
+                    $rate =$exchangedocu->exchangerates->firstWhere('currency_id', $id);
+                    if ($rate) {
+                        $rows[] = [
+                            Carbon::parse($exchangedocu->date)->format('Y-m-d'),
+                            $rate->tt_buy // or $rate->cash, $rate->earn
+                        ];
+                    }
+                }
+                $result[$currency][$field] = $rows;
+
+            }
+
+        }
+        dd($result);
+
+
+    }
 }
+// const chartData = {
+//   USD: [
+//     ["Date", "USD"],
+//     ["2025-09-17", 2100],
+//     ["2025-09-18", 2120],
+//     ["2025-09-19", 2110],
+//     ["2025-09-20", 2130],
+//     ["2025-09-21", 2140],
+//     ["2025-09-22", 2135],
+//     ["2025-09-23", 2125],
+//   ],
+//   THB: [
+//     ["Date", "THB"],
+//     ["2025-09-17", 60],
+//     ["2025-09-18", 59.5],
+//     ["2025-09-19", 59.8],
+//     ["2025-09-20", 60.2],
+//     ["2025-09-21", 61],
+//     ["2025-09-22", 60.7],
+//     ["2025-09-23", 60.4],
+//   ],

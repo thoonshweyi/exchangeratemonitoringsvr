@@ -26,6 +26,9 @@ Route::put("/currenciesstatus",[CurrenciesControler::class,"typestatus"]);
 
 Route::apiResource("exchangedocus",ExchangeDocusController::class,["as"=>"api"]);
 Route::get("/exchangedocustodaydashboard",[ExchangeDocusController::class,"todayDashboard"]);
+Route::get("/exchangedocusweeklydashboard",[ExchangeDocusController::class,"weeklyDashboard"]);
+
 
 Route::apiResource("exchangerates",ExchangeDocusController::class,["as"=>"api"]);
 Route::get("/exchangerates/{id}/detail",[ExchangeRatesController::class,"detail"]);
+
