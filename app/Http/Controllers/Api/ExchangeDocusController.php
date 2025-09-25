@@ -60,7 +60,7 @@ class ExchangeDocusController extends Controller
             $exchangedocu = ExchangeDocu::create([
                 'date' => $date,
                 'remark' => '',
-                'user_id' => 1
+                'user_id' => $request->user()->id
             ]);
 
             foreach($exchangeratesData as $currencyId=>$currencyObj){
@@ -74,7 +74,7 @@ class ExchangeDocusController extends Controller
                     'earn_sell' => $currencyObj["earn"]["sell"],
                     'record_at' => Carbon::now(),
                     'description' => '',
-                    'user_id' => 1,
+                    'user_id' => $request->user()->id,
                     'exchange_docu_id' => $exchangedocu->id
                 ]);
             }
@@ -124,7 +124,7 @@ class ExchangeDocusController extends Controller
     public function update(Request $request, string $id)
     {
 
-
+        Log::info($request->user()->id);
         DB::beginTransaction();
         try{
 
@@ -135,12 +135,12 @@ class ExchangeDocusController extends Controller
             $exchangedocu->update([
                 'date' => $date,
                 'remark' => '',
-                'user_id' => 1
+                'user_id' => $request->user()->id
             ]);
 
             $exchangerateDatas = $request->exchangerates;
             foreach($exchangerateDatas as $exchangerateData){
-                Log::info($exchangerateData);
+                // Log::info($exchangerateData);
                 $exchangerate = ExchangeRate::findOrFail($exchangerateData['id']);
                 $exchangerate->update([
                     'currency_id' => $exchangerateData['currency_id'],
@@ -152,7 +152,7 @@ class ExchangeDocusController extends Controller
                     'earn_sell' => $exchangerateData['earn_sell'],
                     // 'record_at' => Carbon::now(),
                     'description' => '',
-                    'user_id' => 1
+                    'user_id' => $request->user()->id
                 ]);
             }
 
@@ -202,7 +202,7 @@ class ExchangeDocusController extends Controller
             'updated_at' => $exchangedocu->updated_at->format('d-m-Y h:i:s A'),
 
 
-            'exchangerates' => $exchangedocu->exchangerates()->with('currency')->get()
+            'exchangerates' => $exchangedocu->exchangerates()->orderBy('currency_id','asc')->with('currency')->get()
                                 ->map(function ($exchangerate) use ($yesterdayRates) {
                                     $yesterdayrate = $yesterdayRates[$exchangerate->currency_id] ?? null;
                                     return [
@@ -224,11 +224,11 @@ class ExchangeDocusController extends Controller
 
 
     public function weeklyDashboard(){
-        $currencies = Currency::orderBy('id','asc')->pluck('code','id');
+        $currencies = Currency::where('status_id',3)->orderBy('id','asc')->pluck('code','id');
         // dd($currencies);
         $fields = ['tt','cash','earn'];
 
-        $exchangedocus = ExchangeDocu::orderBy('id','desc')
+        $exchangedocus = ExchangeDocu::orderBy('id','asc')
         ->limit(7)->get();
 
         $result = [];
@@ -241,7 +241,7 @@ class ExchangeDocusController extends Controller
                     if ($rate) {
                         $rows[] = [
                             Carbon::parse($exchangedocu->date)->format('Y-m-d'),
-                            $rate->tt_buy // or $rate->cash, $rate->earn
+                            (float) $rate["${field}_buy"] // or $rate->cash, $rate->earn
                         ];
                     }
                 }
@@ -250,7 +250,7 @@ class ExchangeDocusController extends Controller
             }
 
         }
-        dd($result);
+        return response()->json($result);
 
 
     }
