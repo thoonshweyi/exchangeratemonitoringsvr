@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\ExchangeDocu;
 use App\Models\ExchangeRate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExchangeDocusResource;
 
@@ -40,7 +41,10 @@ class ExchangeRatesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $exchangerate = ExchangeRate::findOrFail($id);
+        $exchangerate->update($request->all());
+
+        return response()->json($exchangerate);
     }
 
     /**

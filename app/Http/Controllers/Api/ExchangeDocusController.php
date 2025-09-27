@@ -112,7 +112,7 @@ class ExchangeDocusController extends Controller
             'remark' => $exchangedocu->remark,
             'user_id' => $exchangedocu->user_id,
 
-            'exchangerates' => $exchangedocu->exchangerates()->with('currency')->get()
+            'exchangerates' => $exchangedocu->exchangerates()->orderBy('currency_id','asc')->with('currency')->get()
         ];
 
         return response()->json($exchangeObj);

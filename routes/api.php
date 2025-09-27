@@ -37,7 +37,7 @@ Route::middleware(["auth:api"])->group(function(){
     Route::apiResource("exchangedocus",ExchangeDocusController::class,["as"=>"api"]);
 
 
-    Route::apiResource("exchangerates",ExchangeDocusController::class,["as"=>"api"]);
+    Route::apiResource("exchangerates",ExchangeRatesController::class,["as"=>"api"]);
     Route::get("/exchangerates/{id}/detail",[ExchangeRatesController::class,"detail"]);
 
 });
