@@ -22,8 +22,8 @@ class ExchangeDocusResource extends JsonResource
             "remark"=>$this->remark,
             "user_id"=>$this->user_id,
             "created_at"=>$this->created_at->format("d m Y"),
-            "updated_at"=>$this->updated_at->format("d m Y"),
-            "dateFormat"=>Carbon::parse($this->date)->format("d m Y"),
+            "updated_at"=>$this->updated_at->format("d-m-Y h:i:s A"),
+            "dateFormat"=>Carbon::parse($this->date)->format("d-m-Y"),
 
             "user"=>User::where("id",$this->user_id)->select(["id","name"])->first(),
             // "status"=>Status::where("id",$this->status_id)->select(["id","name"])->first()

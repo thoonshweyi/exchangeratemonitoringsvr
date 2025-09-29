@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\ExchangeDocu;
 use App\Models\ExchangeRate;
 use Illuminate\Http\Request;
+use App\Models\ChangeHistory;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExchangeDocusResource;
@@ -41,8 +42,33 @@ class ExchangeRatesController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request['record_at'] = Carbon::now();
         $exchangerate = ExchangeRate::findOrFail($id);
+
+        $newChange = $request->newChange;
+        $type = $request->selectedType;
+        $past_record_at = $exchangerate->record_at;
+        $past_buy = $exchangerate[$type."_buy"];
+        $past_sell = $exchangerate[$type."_sell"];
+
         $exchangerate->update($request->all());
+
+
+        if($newChange == true){
+            $type = $request->selectedType;
+
+            $changehistory = ChangeHistory::create([
+                'currency_id' => $exchangerate->currency_id,
+                'type'=> $type,
+                'buy'=> $past_buy,
+                'sell'=> $past_sell,
+                'record_at'=> $past_record_at,
+                'description'=> $exchangerate->description,
+                'user_id' => $request->user()->id,
+                'exchange_docu_id'=> $exchangerate->exchange_docu_id,
+                'refexchange_rate_id'=> $exchangerate->id
+            ]);
+        }
 
         return response()->json($exchangerate);
     }

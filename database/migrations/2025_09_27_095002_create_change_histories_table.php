@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string("description")->nullable();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("exchange_docu_id");
-            $table->unsignedBigInteger("exchange_rate_id");
+            $table->unsignedBigInteger("refexchange_rate_id");
             $table->timestamps();
         });
     }

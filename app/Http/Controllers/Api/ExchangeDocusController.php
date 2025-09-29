@@ -106,13 +106,43 @@ class ExchangeDocusController extends Controller
         $exchangedocu = ExchangeDocu::findOrFail($id);
         $currencies = Currency::where("status_id",3)->get();
 
+        $yesterdayDoc = ExchangeDocu::whereDate('date', Carbon::parse($exchangedocu->date)->subDay())
+                        ->orderBy('id', 'desc')
+                        ->first();
+        $yesterdayRates = [];
+        if ($yesterdayDoc) {
+            $yesterdayRates = $yesterdayDoc->exchangerates()
+                            ->with('currency')
+                            ->get()
+                            ->keyBy('currency_id'); // easy to find by currency_id
+        }
+
         $exchangeObj = [
             'id' => $exchangedocu->id,
             'date' =>  Carbon::parse($exchangedocu->date)->format("Y-m-d"),
             'remark' => $exchangedocu->remark,
             'user_id' => $exchangedocu->user_id,
 
+            // 'exchangerates' => $exchangedocu->exchangerates()->orderBy('currency_id','asc')->with('currency')->get()
+
+
+
             'exchangerates' => $exchangedocu->exchangerates()->orderBy('currency_id','asc')->with('currency')->get()
+                                ->map(function ($exchangerate) use ($yesterdayRates) {
+                                    $yesterdayrate = $yesterdayRates[$exchangerate->currency_id] ?? null;
+                                    return [
+                                        ...$exchangerate->toArray(),
+
+                                        // yesterdayrates
+                                        'yes_tt_buy' => $yesterdayrate ? $yesterdayrate->tt_buy : null,
+                                        'yes_tt_sell' => $yesterdayrate ? $yesterdayrate->tt_sell : null,
+                                        'yes_cash_buy' => $yesterdayrate ? $yesterdayrate->cash_buy : null,
+                                        'yes_cash_sell' => $yesterdayrate ? $yesterdayrate->cash_sell : null,
+                                        'yes_earn_buy' => $yesterdayrate ? $yesterdayrate->earn_buy : null,
+                                        'yes_earn_sell' => $yesterdayrate ? $yesterdayrate->earn_sell : null,
+
+                                    ];
+                                })
         ];
 
         return response()->json($exchangeObj);

@@ -47,19 +47,20 @@ class RateCarry extends Command
             $yesterdayRates = [];
             if ($yesterdayDoc) {
                 $yesterdayRates = $yesterdayDoc->exchangerates()
+                                ->orderBy('currency_id','asc')
                                 ->with('currency')
                                 ->get()
                                 ->keyBy('currency_id'); // easy to find by currency_id
 
-                foreach ($yesterdayRates as $yesterdayRate) {
-                    unset($yesterdayRates['id'], $ryesterdayRatesate['created_at'], $yesterdayRates['updated_at']);
-                    $yesterdayRates['exchange_docu_id'] = $exchangedocu->id;
-                    $yesterdayRates['created_at'] = now();
-                    $yesterdayRates['updated_at'] = now();
+                foreach ($yesterdayRates as $rate) {
+                    $newRate = $rate->replicate();
+                    $newRate->exchange_docu_id = $exchangedocu->id;
+                    $newRate->record_at = Carbon::now();
+                    $newRate->save();
                 }
-
-                \DB::table('exchangerates')->insert($rates);
             }
+
+            DB::commit();
 
         }catch (Exception $e) {
             DB::rollBack();
