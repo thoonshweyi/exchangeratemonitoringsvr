@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
           if(!file_exists(base_path('secrets/oauth/private.key')) || !file_exists(base_path('secrets/oauth/public.key'))){
                Log::error("oauth keys are missing");
           }else{
-               \Log::error("oauth keys are exists");
+            //    \Log::error("oauth keys are exists");
           }
     }
 }
