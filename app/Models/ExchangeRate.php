@@ -29,6 +29,9 @@ class ExchangeRate extends Model
     }
 
     public function changehistory(){
-        return $this->hasMany(ChangeHistory::class,'id','refexchange_rate_id');
+        return $this->hasMany(ChangeHistory::class,'refexchange_rate_id','id');
     }
+
+  
+
 }

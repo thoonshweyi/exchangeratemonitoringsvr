@@ -53,7 +53,7 @@ class ExchangeRatesController extends Controller
 
         $exchangerate->update($request->all());
 
-
+        $changehistory =  [];
         if($newChange == true){
             $type = $request->selectedType;
 
@@ -68,9 +68,13 @@ class ExchangeRatesController extends Controller
                 'exchange_docu_id'=> $exchangerate->exchange_docu_id,
                 'refexchange_rate_id'=> $exchangerate->id
             ]);
+            $changehistory->load('user');
         }
 
-        return response()->json($exchangerate);
+        return response()->json([
+            "data"=>$exchangerate,
+            "changehistory"=> $changehistory ,
+        ]);
     }
 
     /**
@@ -129,6 +133,20 @@ class ExchangeRatesController extends Controller
                                             'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
 
                                             'updated_time' => $exchangerate->updated_at->format('h:i A'),
+
+                                            // change historires
+                                            'changehistories'=> $exchangerate->changehistory()->orderBy('record_at','desc')->with('user')->get()
+                                            ->map(function($changehistory,$idx) use ($yesterdayrate){
+                                                // $prevchangehistory = $changehistory[$idx-1];
+
+                                                return [
+                                                    ...$changehistory->toArray(),
+                                                    'updated_time' => Carbon::parse($changehistory->record_at)->format('h:i A'),
+
+                                                    "diff_".$changehistory->type."_buy"  => $yesterdayrate ? $changehistory->buy - $yesterdayrate->tt_buy : null,
+                                                    "diff_".$changehistory->type."_sell" => $yesterdayrate ? $changehistory->sell - $yesterdayrate->tt_sell : null,
+                                                ];
+                                            })
                                         ];
                                     })
             ];

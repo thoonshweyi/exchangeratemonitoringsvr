@@ -151,7 +151,7 @@ class ExchangeDocusController extends Controller
 
 
                                         // change historires
-                                        'changehistories'=> $exchangerate->changehistory()->orderBy('record_at')->get()
+                                        'changehistories'=> $exchangerate->changehistory()->orderBy('record_at','desc')->with('user')->get()
                                         ->map(function($changehistory){
                                             return [
                                                 ...$changehistory->toArray()

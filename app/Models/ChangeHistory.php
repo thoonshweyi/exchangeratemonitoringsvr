@@ -22,4 +22,7 @@ class ChangeHistory extends Model
         'refexchange_rate_id'
     ];
 
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
