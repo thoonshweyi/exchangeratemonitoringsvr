@@ -20,11 +20,19 @@ class ExchangeDocusController extends Controller
      */
     public function index()
     {
-        $exchangedocus = ExchangeDocu::orderBy('id','desc')->paginate(10);
+        $exchangedocus = ExchangeDocu::orderBy('date','desc')->paginate(10);
 
 
-        return $this->sendRespond(ExchangeDocusResource::collection($exchangedocus),"Exchange Docus retrived successfully");
-
+        // return $this->sendRespond(ExchangeDocusResource::collection($exchangedocus),"Exchange Docus retrived successfully");
+        return response()->json([
+            "data" => ExchangeDocusResource::collection($exchangedocus),
+            "meta" => [
+                "current_page" => $exchangedocus->currentPage(),
+                "last_page" => $exchangedocus->lastPage(),
+                "per_page" => $exchangedocus->perPage(),
+                "total" => $exchangedocus->total(),
+            ]
+        ]);
     }
 
     /**
@@ -141,6 +149,14 @@ class ExchangeDocusController extends Controller
                                         'yes_earn_buy' => $yesterdayrate ? $yesterdayrate->earn_buy : null,
                                         'yes_earn_sell' => $yesterdayrate ? $yesterdayrate->earn_sell : null,
 
+
+                                        // change historires
+                                        'changehistories'=> $exchangerate->changehistory()->orderBy('record_at')->get()
+                                        ->map(function($changehistory){
+                                            return [
+                                                ...$changehistory->toArray()
+                                            ];
+                                        })
                                     ];
                                 })
         ];
@@ -209,7 +225,7 @@ class ExchangeDocusController extends Controller
 
 
     public function todayDashboard(){
-        $exchangedocu = ExchangeDocu::orderBy('id', 'desc')->first();
+        $exchangedocu = ExchangeDocu::orderBy('date', 'desc')->first();
         $currencies = Currency::where("status_id",3)->get();
 
         $yesterdayDoc = ExchangeDocu::whereDate('date', Carbon::parse($exchangedocu->date)->subDay())

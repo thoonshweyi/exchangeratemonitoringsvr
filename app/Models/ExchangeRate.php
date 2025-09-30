@@ -28,4 +28,7 @@ class ExchangeRate extends Model
         return $this->belongsTo(Currency::class);
     }
 
+    public function changehistory(){
+        return $this->hasMany(ChangeHistory::class,'id','refexchange_rate_id');
+    }
 }

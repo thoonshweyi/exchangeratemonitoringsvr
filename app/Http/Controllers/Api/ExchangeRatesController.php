@@ -85,7 +85,7 @@ class ExchangeRatesController extends Controller
         $exchangerate = ExchangeRate::findOrFail($id);
         $currency_id = $exchangerate->currency_id;
 
-        $exchangedocus = ExchangeDocu::orderBy('id','desc')
+        $exchangedocus = ExchangeDocu::orderBy('date','desc')
         ->where('id',"!=",$id)
         ->limit(10)->get();
 
