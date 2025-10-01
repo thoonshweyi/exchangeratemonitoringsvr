@@ -18,9 +18,43 @@ class ExchangeDocusController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $exchangedocus = ExchangeDocu::orderBy('date','desc')->paginate(10);
+
+        // $exchangedocus = ExchangeDocu::orderBy('date','desc')->paginate(10);
+        $results = ExchangeDocu::query();
+
+        $document_from_date     = $request->from_date;
+        $document_to_date       = $request->to_date;
+
+        if (!empty($document_from_date) || !empty($document_to_date)) {
+            if($document_from_date === $document_to_date)
+            {
+                $results = $results->whereDate('date', $document_from_date);
+            }
+            else
+            {
+
+                if($document_from_date && $document_to_date){
+                    $from_date = Carbon::parse($document_from_date);
+                    $to_date = Carbon::parse($document_to_date)->endOfDay();
+                    $results = $results->whereBetween('date', [$from_date , $to_date]);
+                }
+                if($document_from_date)
+                {
+                    $from_date = Carbon::parse($document_from_date);
+                    $results = $results->whereDate('date', ">=",$from_date);
+                }
+                if($document_to_date)
+                {
+                    $to_date = Carbon::parse($document_to_date)->endOfDay();
+                    $results = $results->whereDate('date',"<=", $to_date);
+                }
+
+            }
+        }
+
+        $exchangedocus = $results->orderBy('date','desc')->paginate(10);
 
 
         // return $this->sendRespond(ExchangeDocusResource::collection($exchangedocus),"Exchange Docus retrived successfully");

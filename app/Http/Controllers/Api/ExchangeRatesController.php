@@ -90,7 +90,6 @@ class ExchangeRatesController extends Controller
         $currency_id = $exchangerate->currency_id;
 
         $exchangedocus = ExchangeDocu::orderBy('date','desc')
-        ->where('id',"!=",$id)
         ->limit(10)->get();
 
 
@@ -170,8 +169,11 @@ class ExchangeRatesController extends Controller
                                                     // $prevchangehistory = $idx > 0 ? $changehistories[$idx - 1] : null; // order by asc
 
                                                     // $prevchangehistory = $idx < $changehistories->where('type',$changehistory->type)->count() - 1 ? $changehistories[$idx + 1] : null;
-                                                    $prevchangehistory = $changehistories->where('type',$changehistory->type)->where("id","<",$changehistory->id)->first();
-
+                                                        $prevchangehistory = $changehistories
+                                                        ->where('type', $changehistory->type)
+                                                        ->where('record_at', '<', $changehistory->record_at) // not id, safer with time
+                                                        ->sortByDesc('record_at') // get the latest one before current
+                                                        ->first();
                                                     if($prevchangehistory){
                                                         return [
                                                             ...$changehistory->toArray(),
@@ -181,6 +183,8 @@ class ExchangeRatesController extends Controller
                                                             "diff_".$changehistory->type."_sell" => $prevchangehistory ? $changehistory->sell - $prevchangehistory->sell : null,
                                                         ];
                                                     }
+                                                    Log::info($yesterdayrate);
+                                                    // Log::info($changehistory->buy ."   ".$yesterdayrate[$changehistory->type."_buy"]);
                                                     return [
                                                         ...$changehistory->toArray(),
                                                         'updated_time' => Carbon::parse($changehistory->record_at)->format('h:i A'),
