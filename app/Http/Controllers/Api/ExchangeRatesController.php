@@ -121,32 +121,73 @@ class ExchangeRatesController extends Controller
                                     ->get()
                                     ->map(function ($exchangerate) use ($yesterdayRates,$currency_id) {
                                         $yesterdayrate = $yesterdayRates[$exchangerate->currency_id] ?? null;
+                                        $changehistories = $exchangerate->changehistory()->orderBy('record_at','desc')->with('user')->get();
+
+
+                                        if($changehistories->count() <= 0){
+                                            $diffs = [
+                                                   // diffs
+                                                'diff_tt_buy'  => $yesterdayrate ? $exchangerate->tt_buy - $yesterdayrate->tt_buy : null,
+                                                'diff_tt_sell' => $yesterdayrate ? $exchangerate->tt_sell - $yesterdayrate->tt_sell : null,
+                                                'diff_cash_buy'  => $yesterdayrate ? $exchangerate->cash_buy - $yesterdayrate->cash_buy : null,
+                                                'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterdayrate->cash_sell : null,
+                                                'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterdayrate->earn_buy : null,
+                                                'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
+                                            ];
+                                        }else{
+                                            // $count = $changehistories->count();
+                                            // $lastchangehistory = $changehistories[$count -1];
+                                            // $diffs = [
+                                            //        // diffs
+                                            //     'diff_tt_buy'  => $lastchangehistory ? $lastchangehistory->tt_buy - $yesterdayrate->tt_buy : null,
+                                            //     'diff_tt_sell' => $lastchangehistory ? $lastchangehistory->tt_sell - $yesterdayrate->tt_sell : null,
+                                            //     'diff_cash_buy'  => $lastchangehistory ? $exchangerate->cash_buy - $yesterdayrate->cash_buy : null,
+                                            //     'diff_cash_sell' => $lastchangehistory ? $exchangerate->cash_sell - $yesterdayrate->cash_sell : null,
+                                            //     'diff_earn_buy'  => $lastchangehistory ? $exchangerate->earn_buy - $yesterdayrate->earn_buy : null,
+                                            //     'diff_earn_sell' => $lastchangehistory ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
+                                            // ];
+                                            $diffs = [
+                                                   // diffs
+                                                'diff_tt_buy'  => $yesterdayrate ? $exchangerate->tt_buy - $yesterdayrate->tt_buy : null,
+                                                'diff_tt_sell' => $yesterdayrate ? $exchangerate->tt_sell - $yesterdayrate->tt_sell : null,
+                                                'diff_cash_buy'  => $yesterdayrate ? $exchangerate->cash_buy - $yesterdayrate->cash_buy : null,
+                                                'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterdayrate->cash_sell : null,
+                                                'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterdayrate->earn_buy : null,
+                                                'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
+                                            ];
+                                        }
                                         return [
                                             ...$exchangerate->toArray(),
+                                            ...$diffs,
 
-                                            // diffs
-                                            'diff_tt_buy'  => $yesterdayrate ? $exchangerate->tt_buy - $yesterdayrate->tt_buy : null,
-                                            'diff_tt_sell' => $yesterdayrate ? $exchangerate->tt_sell - $yesterdayrate->tt_sell : null,
-                                            'diff_cash_buy'  => $yesterdayrate ? $exchangerate->cash_buy - $yesterdayrate->cash_buy : null,
-                                            'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterdayrate->cash_sell : null,
-                                            'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterdayrate->earn_buy : null,
-                                            'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
 
                                             'updated_time' => $exchangerate->updated_at->format('h:i A'),
 
                                             // change historires
-                                            'changehistories'=> $exchangerate->changehistory()->orderBy('record_at','desc')->with('user')->get()
-                                            ->map(function($changehistory,$idx) use ($yesterdayrate){
-                                                // $prevchangehistory = $changehistory[$idx-1];
+                                            'changehistories'=> $changehistories
+                                                ->map(function($changehistory,$idx) use ($yesterdayrate,$changehistories){
+                                                    // $prevchangehistory = $idx > 0 ? $changehistories[$idx - 1] : null; // order by asc
 
-                                                return [
-                                                    ...$changehistory->toArray(),
-                                                    'updated_time' => Carbon::parse($changehistory->record_at)->format('h:i A'),
+                                                    $prevchangehistory = $idx < $changehistories->count() - 1 ? $changehistories[$idx + 1] : null;
+                                                    Log::info($prevchangehistory);
 
-                                                    "diff_".$changehistory->type."_buy"  => $yesterdayrate ? $changehistory->buy - $yesterdayrate->tt_buy : null,
-                                                    "diff_".$changehistory->type."_sell" => $yesterdayrate ? $changehistory->sell - $yesterdayrate->tt_sell : null,
-                                                ];
-                                            })
+                                                    if($prevchangehistory){
+                                                        return [
+                                                            ...$changehistory->toArray(),
+                                                            'updated_time' => Carbon::parse($changehistory->record_at)->format('h:i A'),
+
+                                                            "diff_".$changehistory->type."_buy"  => $prevchangehistory ? $changehistory->buy - $prevchangehistory->buy : null,
+                                                            "diff_".$changehistory->type."_sell" => $prevchangehistory ? $changehistory->sell - $prevchangehistory->sell : null,
+                                                        ];
+                                                    }
+                                                    return [
+                                                        ...$changehistory->toArray(),
+                                                        'updated_time' => Carbon::parse($changehistory->record_at)->format('h:i A'),
+
+                                                        "diff_".$changehistory->type."_buy"  => $yesterdayrate ? $changehistory->buy - $yesterdayrate[$changehistory->type."_buy"] : null,
+                                                        "diff_".$changehistory->type."_sell" => $yesterdayrate ? $changehistory->sell - $yesterdayrate[$changehistory->type."_sell"] : null,
+                                                    ];
+                                                })
                                         ];
                                     })
             ];
