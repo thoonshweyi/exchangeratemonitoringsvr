@@ -147,13 +147,13 @@ class ExchangeRatesController extends Controller
                                             }
 
                                             if($lastchangehistory_cash){
-                                                $diffs['diff_cash_buy']  = $lastchangehistory_cash ? $exchangerate->tt_buy - $lastchangehistory_cash->buy : null;
-                                                $diffs['diff_cash_buy'] = $lastchangehistory_cash ? $exchangerate->tt_sell - $lastchangehistory_cash->sell : null;
+                                                $diffs['diff_cash_buy']  = $lastchangehistory_cash ? $exchangerate->cash_buy - $lastchangehistory_cash->buy : null;
+                                                $diffs['diff_cash_sell'] = $lastchangehistory_cash ? $exchangerate->cash_sell - $lastchangehistory_cash->sell : null;
                                             }
 
                                             if($lastchangehistory_earn){
-                                                $diffs['diff_earn_buy']  = $lastchangehistory_earn ? $exchangerate->tt_buy - $lastchangehistory_earn->buy : null;
-                                                $diffs['diff_earn_buy'] = $lastchangehistory_earn ? $exchangerate->tt_sell - $lastchangehistory_earn->sell : null;
+                                                $diffs['diff_earn_buy']  = $lastchangehistory_earn ? $exchangerate->earn_buy - $lastchangehistory_earn->buy : null;
+                                                $diffs['diff_earn_sell'] = $lastchangehistory_earn ? $exchangerate->earn_sell - $lastchangehistory_earn->sell : null;
                                             }
 
                                         }
@@ -169,7 +169,7 @@ class ExchangeRatesController extends Controller
                                                 ->map(function($changehistory,$idx) use ($yesterdayrate,$changehistories){
                                                     // $prevchangehistory = $idx > 0 ? $changehistories[$idx - 1] : null; // order by asc
 
-                                                    $prevchangehistory = $idx < $changehistories->count() - 1 ? $changehistories[$idx + 1] : null;
+                                                    $prevchangehistory = $idx < $changehistories->where('type',$changehistory->type)->count() - 1 ? $changehistories[$idx + 1] : null;
                                                     // Log::info($prevchangehistory);
 
                                                     if($prevchangehistory){
