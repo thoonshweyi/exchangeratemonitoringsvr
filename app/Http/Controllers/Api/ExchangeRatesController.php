@@ -169,8 +169,8 @@ class ExchangeRatesController extends Controller
                                                 ->map(function($changehistory,$idx) use ($yesterdayrate,$changehistories){
                                                     // $prevchangehistory = $idx > 0 ? $changehistories[$idx - 1] : null; // order by asc
 
-                                                    $prevchangehistory = $idx < $changehistories->where('type',$changehistory->type)->count() - 1 ? $changehistories[$idx + 1] : null;
-                                                    // Log::info($prevchangehistory);
+                                                    // $prevchangehistory = $idx < $changehistories->where('type',$changehistory->type)->count() - 1 ? $changehistories[$idx + 1] : null;
+                                                    $prevchangehistory = $changehistories->where('type',$changehistory->type)->where("id","<",$changehistory->id)->first();
 
                                                     if($prevchangehistory){
                                                         return [
