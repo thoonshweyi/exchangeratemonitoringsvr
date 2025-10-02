@@ -218,23 +218,23 @@ class ExchangeDocusController extends Controller
                 'user_id' => $request->user()->id
             ]);
 
-            $exchangerateDatas = $request->exchangerates;
-            foreach($exchangerateDatas as $exchangerateData){
-                // Log::info($exchangerateData);
-                $exchangerate = ExchangeRate::findOrFail($exchangerateData['id']);
-                $exchangerate->update([
-                    'currency_id' => $exchangerateData['currency_id'],
-                    'tt_buy' => $exchangerateData['tt_buy'],
-                    'tt_sell' => $exchangerateData['tt_sell'],
-                    'cash_buy' => $exchangerateData['cash_buy'],
-                    'cash_sell' => $exchangerateData['cash_sell'],
-                    'earn_buy' => $exchangerateData['earn_buy'],
-                    'earn_sell' => $exchangerateData['earn_sell'],
-                    // 'record_at' => Carbon::now(),
-                    'description' => '',
-                    'user_id' => $request->user()->id
-                ]);
-            }
+            // $exchangerateDatas = $request->exchangerates;
+            // foreach($exchangerateDatas as $exchangerateData){
+            //     // Log::info($exchangerateData);
+            //     $exchangerate = ExchangeRate::findOrFail($exchangerateData['id']);
+            //     $exchangerate->update([
+            //         'currency_id' => $exchangerateData['currency_id'],
+            //         'tt_buy' => $exchangerateData['tt_buy'],
+            //         'tt_sell' => $exchangerateData['tt_sell'],
+            //         'cash_buy' => $exchangerateData['cash_buy'],
+            //         'cash_sell' => $exchangerateData['cash_sell'],
+            //         'earn_buy' => $exchangerateData['earn_buy'],
+            //         'earn_sell' => $exchangerateData['earn_sell'],
+            //         // 'record_at' => Carbon::now(),
+            //         'description' => '',
+            //         'user_id' => $request->user()->id
+            //     ]);
+            // }
 
             DB::commit();
             return $this->sendRespond($exchangedocu,"Exchange updated successfully");
@@ -295,6 +295,10 @@ class ExchangeDocusController extends Controller
                                         'diff_cash_sell' => $yesterdayrate ? $exchangerate->cash_sell - $yesterdayrate->cash_sell : null,
                                         'diff_earn_buy'  => $yesterdayrate ? $exchangerate->earn_buy - $yesterdayrate->earn_buy : null,
                                         'diff_earn_sell' => $yesterdayrate ? $exchangerate->earn_sell - $yesterdayrate->earn_sell : null,
+
+                                        'created_at' => $exchangerate->created_at->format('d-m-Y h:i:s A'),
+                                        'updated_at' => $exchangerate->updated_at->format('d-m-Y h:i:s A'),
+                                        'record_at' => Carbon::parse($exchangerate->record_at)->format('d-m-Y h:i:s A'),
                                     ];
                                 })
         ];

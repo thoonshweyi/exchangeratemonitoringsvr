@@ -160,6 +160,9 @@ class ExchangeRatesController extends Controller
                                             ...$exchangerate->toArray(),
                                             ...$diffs,
 
+                                            'created_at' => $exchangerate->created_at->format('d-m-Y h:i:s A'),
+                                            'updated_at' => $exchangerate->updated_at->format('d-m-Y h:i:s A'),
+                                            'record_at' => Carbon::parse($exchangerate->record_at)->format('d-m-Y h:i:s A'),
 
                                             'updated_time' => $exchangerate->updated_at->format('h:i A'),
 
