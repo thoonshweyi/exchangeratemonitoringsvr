@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\ExchangeDocusResource;
 
 class ExchangeDocusController extends Controller
@@ -75,22 +76,15 @@ class ExchangeDocusController extends Controller
     public function store(Request $request)
     {
 
-        // $validator = Validator::make($request->all(), [
-        //     'form_id' => 'required|exists:forms,id',
-        //     'questionanswers' => 'required|array',
-        //     'branch_id' => 'required|exists:branches,id',
-        // ], [
-        //     'form_id.required' => 'Form ID is required.',
-        //     'form_id.exists' => 'Invalid Form.',
-        //     'questionanswers.required' => 'Answers are required.',
-        //     'questionanswers.array' => 'Answers must be an array.',
-        //     'branch_id.required' => 'From Branch is required.',
-        //     'branch_id.exists' => 'Invalid Branch.',
-        // ]);
-
-        // if($validator->fails()){
-        //     return response()->json(["errors"=>$validator->errors()],422);
-        // }
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|unique:exchange_docus,date',
+        ], [
+            'date.required' => 'Date is required.',
+            'date.unique' => 'This date already exists.', // optional custom message
+        ]);
+        if($validator->fails()){
+            return response()->json(["errors"=>$validator->errors()]);
+        }
 
          DB::beginTransaction();
         try{
@@ -312,8 +306,8 @@ class ExchangeDocusController extends Controller
         // dd($currencies);
         $fields = ['tt','cash','earn'];
 
-        $exchangedocus = ExchangeDocu::orderBy('id','asc')
-        ->limit(7)->get();
+        $exchangedocus = ExchangeDocu::orderBy('date','desc')
+        ->limit(7)->get()->reverse();;
 
         $result = [];
         foreach($currencies as $id=>$currency){

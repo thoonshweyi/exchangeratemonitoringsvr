@@ -32,17 +32,21 @@ class RateCarry extends Command
         DB::beginTransaction();
         try{
 
+
+            // Log::info(Carbon::parse($exchangedocu->date)->subDay()); // [2025-09-29 11:22:24] local.INFO: 2025-09-28 11:22:24
+
+            // $yesterdayDoc = ExchangeDocu::whereDate('date', Carbon::parse($exchangedocu->date)->subDay())
+            //                 ->orderBy('id', 'desc')
+            //                 ->first();
+
+            $yesterdayDoc = ExchangeDocu::orderBy('date','desc')->first();
+
             $date = Carbon::now();
             $exchangedocu = ExchangeDocu::create([
                 'date' => $date,
                 'remark' => '',
                 'user_id' => 3
             ]);
-            // Log::info(Carbon::parse($exchangedocu->date)->subDay()); // [2025-09-29 11:22:24] local.INFO: 2025-09-28 11:22:24
-
-            $yesterdayDoc = ExchangeDocu::whereDate('date', Carbon::parse($exchangedocu->date)->subDay())
-                            ->orderBy('id', 'desc')
-                            ->first();
             Log::info($yesterdayDoc);
             $yesterdayRates = [];
             if ($yesterdayDoc) {
