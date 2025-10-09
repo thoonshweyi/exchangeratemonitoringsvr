@@ -186,7 +186,7 @@ class ExchangeRatesController extends Controller
                                                             "diff_".$changehistory->type."_sell" => $prevchangehistory ? $changehistory->sell - $prevchangehistory->sell : null,
                                                         ];
                                                     }
-                                                    Log::info($yesterdayrate);
+                                                    // Log::info($yesterdayrate);
                                                     // Log::info($changehistory->buy ."   ".$yesterdayrate[$changehistory->type."_buy"]);
                                                     return [
                                                         ...$changehistory->toArray(),
