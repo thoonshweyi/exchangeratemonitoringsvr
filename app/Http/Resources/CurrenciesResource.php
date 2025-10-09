@@ -23,6 +23,7 @@ class CurrenciesResource extends JsonResource
             "slug"=>$this->slug,
             "status_id"=>$this->status_id,
             "user_id"=>$this->user_id,
+            "icon"=>$this->icon,
             "created_at"=>$this->created_at->format("d m Y"),
             "updated_at"=>$this->updated_at->format("d m Y"),
 

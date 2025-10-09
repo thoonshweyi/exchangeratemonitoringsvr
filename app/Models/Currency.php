@@ -17,6 +17,7 @@ class Currency extends Model
         'code',
         'status_id',
         'user_id',
+        'icon'
     ];
 
 
