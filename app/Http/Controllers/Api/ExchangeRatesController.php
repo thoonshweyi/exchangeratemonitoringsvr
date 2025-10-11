@@ -52,6 +52,7 @@ class ExchangeRatesController extends Controller
         $past_sell = $exchangerate[$type."_sell"];
 
         $exchangerate->update($request->all());
+        // Log::info($exchangerate->record_at, $exchangerate->created_at);
 
         $changehistory =  [];
         if($newChange == true){
@@ -90,7 +91,7 @@ class ExchangeRatesController extends Controller
         $currency_id = $exchangerate->currency_id;
 
         $exchangedocus = ExchangeDocu::orderBy('date','desc')
-        ->limit(10)->get();
+        ->paginate(10);
 
 
         $histories = $exchangedocus->map(function($exchangedocu,$idx) use($currency_id){
