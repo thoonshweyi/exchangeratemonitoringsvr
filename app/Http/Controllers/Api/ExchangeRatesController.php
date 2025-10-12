@@ -67,29 +67,33 @@ class ExchangeRatesController extends Controller
 
                 // Log::info($exchangerate->created_at);dd("hay");
 
-                if ($exchangerate->$field == $exchangerate->created_at) {
+                if (($exchangerate->$field == $exchangerate->created_at) && $exchangerate->user_id == 6) {
 
                     $editcarry = true;
-                    $request[$field] = Carbon::now();
                 }
+
+                if(!$editcarry){
+
+                    $changehistory = ChangeHistory::create([
+                        'currency_id' => $exchangerate->currency_id,
+                        'type'=> $type,
+                        'buy'=> $past_buy,
+                        'sell'=> $past_sell,
+                        'record_at'=> $exchangerate[$field],
+                        'description'=> $exchangerate->description,
+                        'user_id' => $request->user()->id,
+                        'exchange_docu_id'=> $exchangerate->exchange_docu_id,
+                        'refexchange_rate_id'=> $exchangerate->id
+                    ]);
+                    $changehistory->load('user');
+                }
+                $request[$field] = Carbon::now();
+
             }
 
-            if(!$editcarry){
-                $changehistory = ChangeHistory::create([
-                    'currency_id' => $exchangerate->currency_id,
-                    'type'=> $type,
-                    'buy'=> $past_buy,
-                    'sell'=> $past_sell,
-                    'record_at'=> $past_record_at,
-                    'description'=> $exchangerate->description,
-                    'user_id' => $request->user()->id,
-                    'exchange_docu_id'=> $exchangerate->exchange_docu_id,
-                    'refexchange_rate_id'=> $exchangerate->id
-                ]);
-                $changehistory->load('user');
-            }
 
         }
+        Log::info($request);
 
         $exchangerate->update($request->all());
         // Log::info($exchangerate->record_at, $exchangerate->created_at);
@@ -188,6 +192,10 @@ class ExchangeRatesController extends Controller
                                             'record_at' => Carbon::parse($exchangerate->record_at)->format('d-m-Y h:i:s A'),
 
                                             'updated_time' => $exchangerate->updated_at->format('h:i A'),
+                                            'tt_updated_datetime' => Carbon::parse($exchangerate->tt_updated_datetime)->format('h:i A'),
+                                            'cash_updated_datetime' => Carbon::parse($exchangerate->cash_updated_datetime)->format('h:i A'),
+                                            'earn_updated_datetime' => Carbon::parse($exchangerate->earn_updated_datetime)->format('h:i A'),
+
 
                                             // change historires
                                             'changehistories'=> $changehistories

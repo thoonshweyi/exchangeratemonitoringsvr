@@ -60,6 +60,11 @@ class RateCarry extends Command
                     $newRate = $rate->replicate();
                     $newRate->exchange_docu_id = $exchangedocu->id;
                     $newRate->record_at = Carbon::now();
+                    $newRate->user_id = 6;
+                    $newRate->tt_updated_datetime = Carbon::now();
+                    $newRate->cash_updated_datetime = Carbon::now();
+                    $newRate->earn_updated_datetime = Carbon::now();
+
                     $newRate->save();
                 }
             }
