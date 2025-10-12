@@ -111,7 +111,10 @@ class ExchangeDocusController extends Controller
                     'record_at' => Carbon::now(),
                     'description' => '',
                     'user_id' => $request->user()->id,
-                    'exchange_docu_id' => $exchangedocu->id
+                    'exchange_docu_id' => $exchangedocu->id,
+                    'tt_updated_datetime'=> Carbon::now(),
+                    'cash_updated_datetime'=> Carbon::now(),
+                    'earn_updated_datetime'=> Carbon::now(),
                 ]);
             }
             DB::commit();

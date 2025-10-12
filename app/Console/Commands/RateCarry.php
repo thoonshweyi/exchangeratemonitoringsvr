@@ -45,7 +45,7 @@ class RateCarry extends Command
             $exchangedocu = ExchangeDocu::create([
                 'date' => $date,
                 'remark' => '',
-                'user_id' => 3
+                'user_id' => 6
             ]);
             Log::info($yesterdayDoc);
             $yesterdayRates = [];

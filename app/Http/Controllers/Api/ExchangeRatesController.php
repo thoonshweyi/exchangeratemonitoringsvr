@@ -46,31 +46,53 @@ class ExchangeRatesController extends Controller
         $exchangerate = ExchangeRate::findOrFail($id);
 
         $newChange = $request->newChange;
-        $type = $request->selectedType;
-        $past_record_at = $exchangerate->record_at;
-        $past_buy = $exchangerate[$type."_buy"];
-        $past_sell = $exchangerate[$type."_sell"];
-
-        $exchangerate->update($request->all());
-        // Log::info($exchangerate->record_at, $exchangerate->created_at);
 
         $changehistory =  [];
         if($newChange == true){
             $type = $request->selectedType;
+            $past_record_at = $exchangerate->record_at;
+            $past_buy = $exchangerate[$type."_buy"];
+            $past_sell = $exchangerate[$type."_sell"];
 
-            $changehistory = ChangeHistory::create([
-                'currency_id' => $exchangerate->currency_id,
-                'type'=> $type,
-                'buy'=> $past_buy,
-                'sell'=> $past_sell,
-                'record_at'=> $past_record_at,
-                'description'=> $exchangerate->description,
-                'user_id' => $request->user()->id,
-                'exchange_docu_id'=> $exchangerate->exchange_docu_id,
-                'refexchange_rate_id'=> $exchangerate->id
-            ]);
-            $changehistory->load('user');
+            $editcarry = false;
+            $fields = [
+                'tt'   => 'tt_updated_datetime',
+                'cash' => 'cash_updated_datetime',
+                'earn' => 'earn_updated_datetime',
+            ];
+
+
+            if (isset($fields[$type])) {
+                $field = $fields[$type];
+
+                // Log::info($exchangerate->created_at);dd("hay");
+
+                if ($exchangerate->$field == $exchangerate->created_at) {
+
+                    $editcarry = true;
+                    $request[$field] = Carbon::now();
+                }
+            }
+
+            if(!$editcarry){
+                $changehistory = ChangeHistory::create([
+                    'currency_id' => $exchangerate->currency_id,
+                    'type'=> $type,
+                    'buy'=> $past_buy,
+                    'sell'=> $past_sell,
+                    'record_at'=> $past_record_at,
+                    'description'=> $exchangerate->description,
+                    'user_id' => $request->user()->id,
+                    'exchange_docu_id'=> $exchangerate->exchange_docu_id,
+                    'refexchange_rate_id'=> $exchangerate->id
+                ]);
+                $changehistory->load('user');
+            }
+
         }
+
+        $exchangerate->update($request->all());
+        // Log::info($exchangerate->record_at, $exchangerate->created_at);
 
         return response()->json([
             "data"=>$exchangerate,

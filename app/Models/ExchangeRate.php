@@ -21,7 +21,10 @@ class ExchangeRate extends Model
         'record_at',
         'description',
         'user_id',
-        'exchange_docu_id'
+        'exchange_docu_id',
+        'tt_updated_datetime',
+        'cash_updated_datetime',
+        'earn_updated_datetime',
     ];
 
     public function currency(){
@@ -32,6 +35,6 @@ class ExchangeRate extends Model
         return $this->hasMany(ChangeHistory::class,'refexchange_rate_id','id');
     }
 
-  
+
 
 }
