@@ -145,7 +145,7 @@ class ExchangeRatesController extends Controller
                 'exchangerates' => $exchangedocu->exchangerates()->with('currency')
                                     ->where('currency_id',$currency_id)
                                     ->get()
-                                    ->map(function ($exchangerate) use ($yesterdayRates,$currency_id) {
+                                    ->map(function ($exchangerate,$idx) use ($yesterdayRates,$currency_id) {
                                         $yesterdayrate = $yesterdayRates[$exchangerate->currency_id] ?? null;
                                         $changehistories = $exchangerate->changehistory()->orderBy('record_at','desc')->with('user')->get();
 
@@ -183,18 +183,25 @@ class ExchangeRatesController extends Controller
                                             }
 
                                         }
+
+                                        $updated_datetimes = [];
+                                        if($idx == 0){
+                                            $updated_datetimes["tt_updated_datetime"] = Carbon::parse($exchangerate->tt_updated_datetime)->format('d-m-Y h:i:s A');
+                                            $updated_datetimes["cash_updated_datetime"] = Carbon::parse($exchangerate->cash_updated_datetime)->format('d-m-Y h:i:s A');
+                                            $updated_datetimes["earn_updated_datetime"] = Carbon::parse($exchangerate->earn_updated_datetime)->format('d-m-Y h:i:s A');
+                                        }
                                         return [
                                             ...$exchangerate->toArray(),
                                             ...$diffs,
-
+                                            ...$updated_datetimes,
                                             'created_at' => $exchangerate->created_at->format('d-m-Y h:i:s A'),
                                             'updated_at' => $exchangerate->updated_at->format('d-m-Y h:i:s A'),
                                             'record_at' => Carbon::parse($exchangerate->record_at)->format('d-m-Y h:i:s A'),
 
                                             'updated_time' => $exchangerate->updated_at->format('h:i A'),
-                                            'tt_updated_datetime' => Carbon::parse($exchangerate->tt_updated_datetime)->format('h:i A'),
-                                            'cash_updated_datetime' => Carbon::parse($exchangerate->cash_updated_datetime)->format('h:i A'),
-                                            'earn_updated_datetime' => Carbon::parse($exchangerate->earn_updated_datetime)->format('h:i A'),
+                                            'tt_updated_time' => Carbon::parse($exchangerate->tt_updated_datetime)->format('h:i A'),
+                                            'cash_updated_time' => Carbon::parse($exchangerate->cash_updated_datetime)->format('h:i A'),
+                                            'earn_updated_time' => Carbon::parse($exchangerate->earn_updated_datetime)->format('h:i A'),
 
 
                                             // change historires
