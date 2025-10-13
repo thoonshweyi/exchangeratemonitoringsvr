@@ -296,6 +296,10 @@ class ExchangeDocusController extends Controller
                                         'created_at' => $exchangerate->created_at->format('d-m-Y h:i:s A'),
                                         'updated_at' => $exchangerate->updated_at->format('d-m-Y h:i:s A'),
                                         'record_at' => Carbon::parse($exchangerate->record_at)->format('d-m-Y h:i:s A'),
+
+                                        'tt_updated_datetime' => Carbon::parse($exchangerate->tt_updated_datetime)->format('d-m-Y h:i:s A'),
+                                        'cash_updated_datetime' => Carbon::parse($exchangerate->cash_updated_datetime)->format('d-m-Y h:i:s A'),
+                                        'earn_updated_datetime' => Carbon::parse($exchangerate->earn_updated_datetime)->format('d-m-Y h:i:s A'),
                                     ];
                                 })
         ];
