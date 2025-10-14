@@ -7,8 +7,10 @@ use App\Models\ExchangeDocu;
 use App\Models\ExchangeRate;
 use Illuminate\Http\Request;
 use App\Models\ChangeHistory;
+use App\Imports\ExchangeRateImport;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\ExchangeDocusResource;
 
 class ExchangeRatesController extends Controller
@@ -67,12 +69,12 @@ class ExchangeRatesController extends Controller
 
                 // Log::info($exchangerate->created_at);dd("hay");
 
-                if (($exchangerate->$field == $exchangerate->created_at) && $exchangerate->user_id == 6) {
+                // if (($exchangerate->$field == $exchangerate->created_at) && $exchangerate->user_id == 6) {
 
-                    $editcarry = true;
-                }
+                //     $editcarry = true;
+                // }
 
-                if(!$editcarry){
+                // if(!$editcarry){
 
                     $changehistory = ChangeHistory::create([
                         'currency_id' => $exchangerate->currency_id,
@@ -86,7 +88,7 @@ class ExchangeRatesController extends Controller
                         'refexchange_rate_id'=> $exchangerate->id
                     ]);
                     $changehistory->load('user');
-                }
+                // }
                 $request[$field] = Carbon::now();
 
             }
@@ -240,5 +242,16 @@ class ExchangeRatesController extends Controller
         });
 
         return response()->json($histories);
+    }
+
+
+    public function excelimport(Request $request){
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls|max:2048'
+        ]);
+
+        Excel::import(new ExchangeRateImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Dept Groups Imported Successfully!');
     }
 }

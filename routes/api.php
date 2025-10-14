@@ -40,5 +40,7 @@ Route::middleware(["auth:api"])->group(function(){
     Route::apiResource("exchangerates",ExchangeRatesController::class,["as"=>"api"]);
     Route::get("/exchangerates/{id}/detail",[ExchangeRatesController::class,"detail"]);
 
+    Route::post("/exchangeratesexcelimport",[ExchangeRatesController::class,"excelimport"]);
+
 });
 

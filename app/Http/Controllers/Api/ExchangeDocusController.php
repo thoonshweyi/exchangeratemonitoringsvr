@@ -339,6 +339,8 @@ class ExchangeDocusController extends Controller
 
 
     }
+
+
 }
 // const chartData = {
 //   USD: [
