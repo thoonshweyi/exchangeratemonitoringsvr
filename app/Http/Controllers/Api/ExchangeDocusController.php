@@ -53,6 +53,9 @@ class ExchangeDocusController extends Controller
                 }
 
             }
+        }else{
+            $specificDate = Carbon::now()->firstOfMonth();
+            $results = $results->where('date', '>=', $specificDate);
         }
 
         $exchangedocus = $results->orderBy('date','desc')->paginate(10);

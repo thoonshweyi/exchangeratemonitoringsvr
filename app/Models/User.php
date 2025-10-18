@@ -52,4 +52,10 @@ class User extends Authenticatable
         return $this->belongsTo(Status::class); // send all column
     }
 
+    public function roles(){
+        // return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class,"role_users");
+    }
+
+
 }

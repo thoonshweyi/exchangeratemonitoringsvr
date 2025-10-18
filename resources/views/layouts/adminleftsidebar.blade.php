@@ -28,6 +28,7 @@
                         <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#admin"><i class="fas fa-user-cog fa-lg me-3"></i> System Manager<i class="fas fa-angle-right mores"></i></a>
                             <ul id="admin" class="collapse ps-4">
                                 <li><a href="{{ route('users.index') }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>  Users</a></li>
+                                <li><a href="{{ route('roles.index') }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>  Roles</a></li>
                             </ul>
                         </li>
                         {{-- <li class="nav-item"><a href="#" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-user fa-lg me-3"></i>Profile</a></li> --}}

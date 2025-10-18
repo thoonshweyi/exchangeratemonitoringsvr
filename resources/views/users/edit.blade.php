@@ -66,9 +66,9 @@
                             </div>
                         </div>
 
-                        {{-- <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <strong>{{ __('user.role') }}:</strong>
+                                <strong>Roles :</strong>
                                 <select id="roles" name="roles[]" class="form-control">
                                     <option value="" selected disabled>-- Select Role --</option>
                                     @foreach ($roles as $key => $role)
@@ -78,7 +78,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div> --}}
+                        </div>
 
                          <div class="col-md-12 mt-3">
                               <div class="d-flex justify-content-end">

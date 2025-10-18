@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Branch;
 use App\Models\Status;
+use App\Models\RoleUser;
 use App\Models\BranchUser;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -89,6 +91,8 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
         $branches = Branch::get();
+        $roles = Role::pluck('name', 'id')->all();
+        $userRole = $user->roles->pluck('id')->all();
         $userBranches = BranchUser::where('user_id',$user->id)->pluck('branch_id')->toArray();
 
         $statuses = Status::whereIn('id',[1,2])->get();
@@ -96,6 +100,9 @@ class UsersController extends Controller
         return view("users.edit")->with("user",$user)
         ->with("statuses",$statuses)
         ->with("branches",$branches)
+        ->with("roles",$roles)
+        ->with("userRole",$userRole)
+    
         ->with("userBranches",$userBranches);
     }
 
@@ -131,14 +138,14 @@ class UsersController extends Controller
             // }
 
             // // Assign Role
-            // $roles = $request->roles;
-            // DB::table('role_users')->where('user_id', $user_id)->delete();
-            // foreach($roles as $role){
-            //     $roleuser = new RoleUser();
-            //     $roleuser->role_id = $role;
-            //     $roleuser->user_id = $user_id;
-            //     $roleuser->save();
-            // }
+            $roles = $request->roles;
+            DB::table('role_users')->where('user_id', $user_id)->delete();
+            foreach($roles as $role){
+                $roleuser = new RoleUser();
+                $roleuser->role_id = $role;
+                $roleuser->user_id = $user_id;
+                $roleuser->save();
+            }
 
             return redirect()->route('users.index')
                 ->with('success', 'User updated successfully');
