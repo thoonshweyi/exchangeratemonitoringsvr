@@ -48,24 +48,25 @@ class ExchangeRatesController extends Controller
         $exchangerate = ExchangeRate::findOrFail($id);
 
         $newChange = $request->newChange;
+        $type = $request->selectedType;
+        $fields = [
+            'tt'   => 'tt_updated_datetime',
+            'cash' => 'cash_updated_datetime',
+            'earn' => 'earn_updated_datetime',
+        ];
+        if (isset($fields[$type])) {
+            $field = $fields[$type];
+        }
+
 
         $changehistory =  [];
         if($newChange == true){
-            $type = $request->selectedType;
             $past_record_at = $exchangerate->record_at;
             $past_buy = $exchangerate[$type."_buy"];
             $past_sell = $exchangerate[$type."_sell"];
 
             $editcarry = false;
-            $fields = [
-                'tt'   => 'tt_updated_datetime',
-                'cash' => 'cash_updated_datetime',
-                'earn' => 'earn_updated_datetime',
-            ];
-
-
-            if (isset($fields[$type])) {
-                $field = $fields[$type];
+         
 
                 // Log::info($exchangerate->created_at);dd("hay");
 
@@ -89,13 +90,9 @@ class ExchangeRatesController extends Controller
                     ]);
                     $changehistory->load('user');
                 // }
-                $request[$field] = Carbon::now();
-
-            }
-
-
         }
-        Log::info($request);
+        $request[$field] = Carbon::now();
+        // Log::info($request);
 
         $exchangerate->update($request->all());
         // Log::info($exchangerate->record_at, $exchangerate->created_at);
