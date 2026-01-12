@@ -39,14 +39,20 @@ class RateCarry extends Command
             //                 ->orderBy('id', 'desc')
             //                 ->first();
 
-            $yesterdayDoc = ExchangeDocu::orderBy('date','desc')->first();
 
             $date = Carbon::now();
+            // $date = Carbon::now()
+            // ->setYear(2026)
+            // ->setMonth(1)
+            // ->setDay(11);
             $exchangedocu = ExchangeDocu::create([
                 'date' => $date,
                 'remark' => '',
                 'user_id' => 6
             ]);
+
+            $yesterdayDoc = ExchangeDocu::where('date', '<', $date)
+                            ->orderBy('date','desc')->first();
             Log::info($yesterdayDoc);
             $yesterdayRates = [];
             if ($yesterdayDoc) {
